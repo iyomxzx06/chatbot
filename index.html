@@ -134,13 +134,17 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history })
       });
-      if (!res.ok) throw new Error("Server error " + res.status);
-      const data = await res.json();
-      thinking.textContent = data.reply;
-      history.push({ role: "model", text: data.reply });
+      let data = {};
+      try { data = await res.json(); } catch (e) {}
+      if (!res.ok) {
+        thinking.textContent = "Error " + res.status + ": " + (data.error || "walang /api/chat sa server");
+      } else {
+        thinking.textContent = data.reply;
+        history.push({ role: "model", text: data.reply });
+      }
     } catch (err) {
-      // No backend yet (for example, opening this file directly): show a demo reply
-      thinking.textContent = "Demo mode: wala pang backend na nakakonekta. Pag na-deploy na sa Vercel, dito lalabas ang sagot ng AI.";
+      // Could not reach the server at all (for example, opening this file directly)
+      thinking.textContent = "Demo mode: hindi maabot ang backend.";
     }
     send.disabled = false;
     input.focus();
