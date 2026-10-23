@@ -38,6 +38,9 @@ export default async function handler(req, res) {
             parts: [{ text: "You are a friendly, helpful assistant. Reply briefly and clearly." }],
           },
           contents,
+          generationConfig: {
+            thinkingConfig: { thinkingLevel: "low" }, // faster replies
+          },
         }),
       }
     );
